@@ -40,7 +40,7 @@ class SignupView(APIView):
             'user': UserSerializer(user).data,
             'token': token.key
         }
-        return Response(data)
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class LoginView(APIView):
@@ -61,7 +61,7 @@ class LoginView(APIView):
                 'token': token.key
             }
 
-            return Response(data)
+            return Response(data, status=status.HTTP_200_OK)
         else:
             return Response({'errors': 'Username or password not correct'},
                             status=status.HTTP_400_BAD_REQUEST)
