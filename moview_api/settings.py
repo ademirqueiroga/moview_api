@@ -25,7 +25,7 @@ SECRET_KEY = '(j+wm9=v9uh$)r!u&$!y87kje=^76nco0w&a&h0%03hfldk@8t'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['mooview.herokuapp.com']
+ALLOWED_HOSTS = ['localhost', 'mooview.herokuapp.com']
 
 
 # Application definition
