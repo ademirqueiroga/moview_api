@@ -21,6 +21,28 @@ class UserViewSet(viewsets.ModelViewSet):
     #temp
     permission_classes = (AllowAny,)
 
+class SignupView(APIView):
+    permission_classes = (AllowAny,)
+    def post(self, request, *args, **kwargs):
+        username = request.data['username']
+        email = request.data['email']
+        password = request.data['password']
+        firt_name = request.data.get('first_name', "")
+        last_name = request.data.get('last_name', "")
+
+        user = User.objects.create_user(username=username, email=email,
+                                         password=password, first_name=firt_name,
+                                         last_name=last_name)
+
+        token, create = Token.objects.get_or_create(user=user)
+
+        data = {
+            'user': UserSerializer(user).data,
+            'token': token.key
+        }
+        return Response(data)
+
+
 class LoginView(APIView):
     permission_classes = (AllowAny,)
 

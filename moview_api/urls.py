@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from accounts.views import UserViewSet, LoginView
+from accounts.views import UserViewSet, LoginView, SignupView
 from movies.views import MovieViewSet
 from rest_framework.routers import DefaultRouter
 
@@ -27,5 +27,6 @@ urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^admin/', admin.site.urls),
     url(r'^auth/', LoginView.as_view()),
+    url(R'^signup/', SignupView.as_view())
     #url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
