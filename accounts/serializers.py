@@ -17,7 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
         return obj.profile.followers.count()
 
     def get_following_count(self, obj):
-        return Profile.objects.filter(followers__id=obj.id).count()
+        return obj.following.count()
 
     class Meta:
         model = User
@@ -33,7 +33,7 @@ class RelationshipSerializer(serializers.ModelSerializer):
         return UserSerializer(queryset, many=True).data
 
     def get_following(self, obj):
-        queryset = User.objects.filter(profile__followers__id=obj.id)
+        queryset = User.objects.filter(following__id=obj.id)
         return UserSerializer(queryset, many=True).data
 
     class Meta:

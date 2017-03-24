@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from rest_framework.authtoken.models import Token
 
+from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
@@ -17,16 +17,28 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (AllowAny,)
+    #permission_classes = (AllowAny,)
 
 class SignupView(APIView):
     permission_classes = (AllowAny,)
+
     def post(self, request, *args, **kwargs):
         username = request.data['username']
         email = request.data['email']
         password = request.data['password']
         firt_name = request.data.get('first_name', "")
         last_name = request.data.get('last_name', "")
+
+        user = User.objects.get(username=username)
+        if user is not None:
+            return Response({'errors': 'Username already registered.'},
+                                    status=status.HTTP_400_BAD_REQUEST)
+
+        user = User.objects.get(email=email)
+        if user is not None:
+            return Response({'errors': 'Email already registered.'},
+                                    status=status.HTTP_400_BAD_REQUEST)
+
 
         user = User.objects.create_user(username=username, email=email,
                                          password=password, first_name=firt_name,
@@ -51,22 +63,34 @@ class LoginView(APIView):
         user = authenticate(username=username, password=password)
 
         if user is not None:
-
             token, created = Token.objects.get_or_create(user=user)
-
             data = {
                 'user': UserSerializer(user, context={'request': request}).data,
                 'token': token.key
             }
-
             return Response(data, status=status.HTTP_200_OK)
+
         else:
             return Response({'errors': 'Username or password not correct'},
-                            status=status.HTTP_400_BAD_REQUEST)
+                                    status=status.HTTP_400_BAD_REQUEST)
 
 
 class RelationshipView(APIView):
+
     def get(self, request, *args, **kwargs):
         user = request.user
         data = RelationshipSerializer(user).data
         return Response(data, status=status.HTTP_200_OK)
+
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        user_id = request.data['user_id']
+
+        already_followed = user.following.filter(pk=user_id).count() > 0
+        if already_followed:
+            user.following.remove(Profile.objects.get(user_id=user_id))
+        else:
+            user.following.add(Profile.objects.get(user_id=user_id))
+
+        return Response(status=status.HTTP_200_OK)
