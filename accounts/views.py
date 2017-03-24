@@ -7,8 +7,7 @@ from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 
-#from .models import Profile
-from .serializers import UserSerializer
+from .serializers import UserSerializer, RelationshipSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -18,7 +17,6 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    #temp
     permission_classes = (AllowAny,)
 
 class SignupView(APIView):
@@ -65,3 +63,10 @@ class LoginView(APIView):
         else:
             return Response({'errors': 'Username or password not correct'},
                             status=status.HTTP_400_BAD_REQUEST)
+
+
+class RelationshipView(APIView):
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        data = RelationshipSerializer(user).data
+        return Response(data, status=status.HTTP_200_OK)
