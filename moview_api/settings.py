@@ -88,11 +88,26 @@ WSGI_APPLICATION = 'moview_api.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
-
+"""
+Development database
+"""
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+"""
+Production database
+"""
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'd14s63o2id7vj5',
+        'USER': 'yanllmoodrvtos',
+        'PASSWORD': '59545d5b040810e1f8802da938ec9013614bb3768d0f7cfb90c247c1ce47ac21',
+        'HOST': 'ec2-54-225-182-108.compute-1.amazonaws.com',
+        'PORT': '5432',
     }
 }
 
