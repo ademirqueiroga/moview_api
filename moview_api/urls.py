@@ -16,12 +16,13 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from accounts.views import UserViewSet, LoginView, SignupView, RelationshipView
-from movies.views import MovieViewSet
+from movies.views import MovieViewSet, CategoryViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'movies', MovieViewSet)
+router.register(r'categories', CategoryViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),
