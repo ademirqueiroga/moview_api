@@ -8,10 +8,10 @@ from rest_framework.permissions import AllowAny
 class MovieViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
-    permission_classes = (AllowAny,)
+    #permission_classes = (AllowAny,)
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = (AllowAny,)
+    #permission_classes = (AllowAny,)

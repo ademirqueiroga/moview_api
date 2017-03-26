@@ -29,13 +29,13 @@ class SignupView(APIView):
         firt_name = request.data.get('first_name', "")
         last_name = request.data.get('last_name', "")
 
-        user = User.objects.get(username=username)
-        if user is not None:
+        users = User.objects.filter(username=username)
+        if users.count() > 0:
             return Response({'errors': 'Username already registered.'},
                                     status=status.HTTP_400_BAD_REQUEST)
 
-        user = User.objects.get(email=email)
-        if user is not None:
+        users = User.objects.filter(email=email)
+        if users.count() > 0:
             return Response({'errors': 'Email already registered.'},
                                     status=status.HTTP_400_BAD_REQUEST)
 
