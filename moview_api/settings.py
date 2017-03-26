@@ -89,9 +89,9 @@ WSGI_APPLICATION = 'moview_api.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
-"""
-Development database
-"""
+# """
+# Development database
+# """
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
