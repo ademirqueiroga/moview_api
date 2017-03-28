@@ -25,26 +25,34 @@ class MovieDetailsView(APIView):
         response = requests.get(url)
         data = response.json()
 
-        serializer = MovieDetailsSerializer(data=data)
+        print data
 
-        if serializer.is_valid():
-            return serializer.save()
-        else:
-            print serializer.errors
-            return
+        if data['status_code'] != 34:
+            serializer = MovieDetailsSerializer(data=data)
+
+            if serializer.is_valid():
+                return serializer.save()
+            else:
+                print serializer.errors
+                return None
 
 
     def get(self, request):
         id = request.path.split('/')[-2]
 
-        movie = Movie.objects.filter(pk=id)
-        if movie.count() == 0:
-            movie = self.retrieve_of_fetch_details(id)
-            return Response(MovieDetailsSerializer(movie).data,
-                                status=status.HTTP_200_OK)
-        else:
+        try:
+            movie = Movie.objects.filter(pk=id)
             return Response(MovieDetailsSerializer(movie[0]).data,
                                 status=status.HTTP_200_OK)
+        except:
+            movie = self.retrieve_of_fetch_details(id)
+            if movie is None:
+                return Response({'errors': 'content not found'},
+                                    status=status.HTTP_404_NOT_FOUND)
+            else:
+                return Response(MovieDetailsSerializer(movie).data,
+                                    status=status.HTTP_200_OK)
+
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
