@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from accounts.views import UserViewSet, LoginView, SignupView, RelationshipView
-from movies.views import MovieViewSet, CategoryViewSet
+from movies.views import MovieViewSet, MovieDetailsView, CategoryViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
@@ -25,6 +25,7 @@ router.register(r'movies', MovieViewSet)
 router.register(r'categories', CategoryViewSet)
 
 urlpatterns = [
+    url(r'^movies/[0-9]+/$', MovieDetailsView.as_view()),
     url(r'^', include(router.urls)),
     url(r'^admin/', admin.site.urls),
     url(r'^auth/', LoginView.as_view()),

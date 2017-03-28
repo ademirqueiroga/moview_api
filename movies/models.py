@@ -21,11 +21,11 @@ class Movie(models.Model):
     categories = models.ManyToManyField(Category, related_name='movies')
     release_date = models.CharField(max_length=15)
     poster_path = models.CharField(max_length=100)
-
-    #director = models.CharField(max_length=100)
-    #main_cast = models.TextField()
-    #duration = models.PositiveSmallIntegerField()
-    #rating = models.FloatField()
+    backdrop_path = models.CharField(max_length=100)
+    budget = models.IntegerField()
+    revenue = models.IntegerField()
+    runtime = models.IntegerField()
+    rating = models.FloatField()
 
     def __str__(self):
         return self.title
