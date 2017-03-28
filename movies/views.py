@@ -12,8 +12,8 @@ class MovieViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = MovieSerializer
 
 
-class MovieDetailsView(APIView):    
-
+class MovieDetailsView(APIView):
+    permission_classes = (AllowAny,)
     def get(self, request):
         id = request.path.split('/')[-2]
 
