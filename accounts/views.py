@@ -10,14 +10,35 @@ from rest_framework.permissions import AllowAny
 from .serializers import UserSerializer, RelationshipSerializer
 
 
-class UserViewSet(viewsets.ModelViewSet):
-    """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
-    """
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    #permission_classes = (AllowAny,)
+class UserView(APIView):
+
+    def get(self, request):
+
+        user = None;
+
+        if 'username' in request.query_params:
+            try:
+                username = request.query_params['username']
+                user = User.objects.get(username=username)
+                return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
+            except:
+                error = {'error': 'Not found'}
+                return Response(error, status=status.HTTP_404_NOT_FOUND)
+
+        elif 'id' in request.query_params:
+            try:
+                user_id = request.query_params['id']
+                user = User.objects.get(pk=user_id);
+                return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
+            except:
+                error = {'error': 'Not found'}
+                return Response(error, status=status.HTTP_404_NOT_FOUND)
+
+        else:
+            queryset = User.objects.all()
+            serializer = UserSerializer(queryset, many=True)
+            return Response(serializer.data,status=status.HTTP_200_OK)
+
 
 class SignupView(APIView):
     permission_classes = (AllowAny,)

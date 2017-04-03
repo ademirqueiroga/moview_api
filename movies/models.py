@@ -1,6 +1,8 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from accounts.models import Profile
+from django.contrib.auth.models import User
 
 class Category(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -34,3 +36,10 @@ class Movie(models.Model):
         verbose_name = 'movie'
         verbose_name_plural = 'movies'
         ordering = ['id']
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, related_name = 'comments', on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, related_name= 'comments', on_delete=models.CASCADE)
+    content = models.TextField()
+    likes = models.IntegerField()

@@ -15,12 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from accounts.views import UserViewSet, LoginView, SignupView, RelationshipView
+from accounts.views import UserView, LoginView, SignupView, RelationshipView
 from movies.views import MovieViewSet, MovieDetailsView, CategoryViewSet
+from core.views import SearchView
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
-router.register(r'users', UserViewSet)
 router.register(r'movies', MovieViewSet)
 router.register(r'categories', CategoryViewSet)
 
@@ -29,7 +29,9 @@ urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^admin/', admin.site.urls),
     url(r'^auth/', LoginView.as_view()),
+    url(r'^users/', UserView.as_view()),
     url(r'^signup/', SignupView.as_view()),
+    url(r'^search', SearchView.as_view()),
     url(r'^relationships/', RelationshipView.as_view()),
     #url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
