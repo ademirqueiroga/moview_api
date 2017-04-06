@@ -8,9 +8,10 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 
 from .serializers import UserSerializer, RelationshipSerializer
-
+from .models import Profile
 
 class UserView(APIView):
+    permission_classes = (AllowAny,)
 
     def get(self, request):
 
@@ -114,4 +115,6 @@ class RelationshipView(APIView):
         else:
             user.following.add(Profile.objects.get(user_id=user_id))
 
-        return Response(status=status.HTTP_200_OK)
+        data = {'follow': not already_followed}
+
+        return Response(data, status=status.HTTP_200_OK)
