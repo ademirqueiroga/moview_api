@@ -11,18 +11,16 @@ from .serializers import UserSerializer, RelationshipSerializer
 from .models import Profile
 
 class UserView(APIView):
-    permission_classes = (AllowAny,)
 
     def get(self, request):
-
-        user = None;
 
         if 'username' in request.query_params:
             try:
                 username = request.query_params['username']
                 user = User.objects.get(username=username)
                 return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
-            except:
+
+            except User.DoesNotExist:
                 error = {'error': 'Not found'}
                 return Response(error, status=status.HTTP_404_NOT_FOUND)
 
@@ -31,7 +29,8 @@ class UserView(APIView):
                 user_id = request.query_params['id']
                 user = User.objects.get(pk=user_id);
                 return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
-            except:
+
+            except User.DoesNotExist:
                 error = {'error': 'Not found'}
                 return Response(error, status=status.HTTP_404_NOT_FOUND)
 
@@ -44,7 +43,7 @@ class UserView(APIView):
 class SignupView(APIView):
     permission_classes = (AllowAny,)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         username = request.data['username']
         email = request.data['email']
         password = request.data['password']
@@ -78,7 +77,7 @@ class SignupView(APIView):
 class LoginView(APIView):
     permission_classes = (AllowAny,)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         username = request.data['username']
         password = request.data['password']
 
@@ -99,13 +98,13 @@ class LoginView(APIView):
 
 class RelationshipView(APIView):
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         user = request.user
         data = RelationshipSerializer(user).data
         return Response(data, status=status.HTTP_200_OK)
 
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         user = request.user
         user_id = request.data['user_id']
 
