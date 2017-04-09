@@ -11,6 +11,7 @@ from .serializers import UserSerializer, RelationshipSerializer
 from .models import Profile
 
 class UserView(APIView):
+    permission_classes = (AllowAny,)
 
     def get(self, request):
 
@@ -111,9 +112,9 @@ class RelationshipView(APIView):
         already_followed = user.following.filter(pk=user_id).count() > 0
         if already_followed:
             user.following.remove(Profile.objects.get(user_id=user_id))
+            data = {'follow': False}
         else:
             user.following.add(Profile.objects.get(user_id=user_id))
-
-        data = {'follow': not already_followed}
+            data = {'follow': True}
 
         return Response(data, status=status.HTTP_200_OK)
