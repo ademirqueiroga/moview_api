@@ -43,3 +43,4 @@ class Comment(models.Model):
     movie = models.ForeignKey(Movie, related_name= 'comments', on_delete=models.CASCADE)
     content = models.TextField()
     likes = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)

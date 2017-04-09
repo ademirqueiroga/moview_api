@@ -15,8 +15,8 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from accounts.views import UserView, LoginView, SignupView, RelationshipView
-from movies.views import MovieViewSet, MovieDetailsView, CategoryViewSet
+from accounts.views import *
+from movies.views import *
 from core.views import SearchView
 from rest_framework.routers import DefaultRouter
 
@@ -33,5 +33,6 @@ urlpatterns = [
     url(r'^signup/', SignupView.as_view()),
     url(r'^search', SearchView.as_view()),
     url(r'^relationships/', RelationshipView.as_view()),
+    url(r'^comments/', CommentView.as_view()),
     #url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]

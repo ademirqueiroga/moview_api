@@ -50,7 +50,7 @@ class SearchView(APIView):
 
             #search for categories
             categories = Category.objects.filter(name__icontains=query)
-            result['categories'] = CategorySerializer(categories, many=True).data
+            #result['categories'] = CategorySerializer(categories, many=True).data
             for category in categories:
                 queryset = category.movies.all()
                 data = MovieSerializer(queryset, many=True).data

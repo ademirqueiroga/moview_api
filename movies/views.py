@@ -1,5 +1,5 @@
-from .models import Movie, Category
-from .serializers import MovieSerializer, MovieDetailsSerializer, CategorySerializer
+from .models import *
+from .serializers import *
 
 from rest_framework import viewsets, status
 from rest_framework.permissions import AllowAny
@@ -53,6 +53,43 @@ class MovieDetailsView(APIView):
                 return Response(MovieDetailsSerializer(movie).data,
                                     status=status.HTTP_200_OK)
 
+
+class CommentView(APIView):
+
+    def get(self, request):
+        user = request.user
+
+        #query for comments of a movie
+        if 'movie' in request.query_params:
+            movie_id = request.query_params['movie']
+            queryset = Comment.objects.filter(movie_id=movie_id)
+
+        #query for comments of a user
+        elif 'user' in request.query_params:
+            user_id = request.query_params['user']
+            queryset = Comment.objects.filter(user_id=user_id)
+
+        #query for comments of request.user
+        else:
+            queryset = Comment.objects.filter(user=user)
+
+        data = CommentSerializer(queryset, many=True).data
+
+        return Response(data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        user = request.user;
+
+        try:
+            movie = Movie.objects.get(pk=request.data['movie_id'])
+        except Movie.DoesNotExist:
+            return Response({'error': 'movie not found'},status=status.HTTP_400_BAD_REQUEST)
+
+        content = request.data['content']
+        comment = Comment(user=user, movie=movie, content=content, likes=0)
+        comment.save()
+
+        return Response(status=status.HTTP_201_CREATED)
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
