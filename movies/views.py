@@ -81,7 +81,7 @@ class CommentView(APIView):
         user = request.user;
 
         try:
-            movie = Movie.objects.get(pk=request.data['movie_id'])
+            movie = Movie.objects.get(pk=request.data['movie'])
         except Movie.DoesNotExist:
             return Response({'error': 'movie not found'},status=status.HTTP_400_BAD_REQUEST)
 
