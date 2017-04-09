@@ -89,7 +89,9 @@ class CommentView(APIView):
         comment = Comment(user=user, movie=movie, content=content, likes=0)
         comment.save()
 
-        return Response(status=status.HTTP_201_CREATED)
+        data = CommentSerializer(comment).data;
+
+        return Response(data, status=status.HTTP_201_CREATED)
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
