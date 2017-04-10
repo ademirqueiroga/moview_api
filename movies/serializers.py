@@ -16,9 +16,14 @@ class MovieSerializer(serializers.ModelSerializer):
 class MovieDetailsSerializer(serializers.ModelSerializer):
 
     categories = serializers.SerializerMethodField()
+    following_comments = serializers.SerializerMethodField();
 
     def get_categories(self, obj):
         return CategorySerializer(obj.categories.all(), many=True).data
+
+    def get_following_comments(self, obj):
+        user = self.context['request'].user
+        return obj.comments.filter(user__profile__in=user.following.all()).count()
 
     class Meta:
         model = Movie

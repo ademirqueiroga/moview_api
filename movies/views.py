@@ -42,7 +42,7 @@ class MovieDetailsView(APIView):
 
         try:
             movie = Movie.objects.filter(pk=id)
-            return Response(MovieDetailsSerializer(movie[0]).data,
+            return Response(MovieDetailsSerializer(movie[0], context={'request': request}).data,
                                 status=status.HTTP_200_OK)
         except:
             movie = self.retrieve_of_fetch_details(id)
@@ -50,7 +50,7 @@ class MovieDetailsView(APIView):
                 return Response({'errors': 'content not found'},
                                     status=status.HTTP_404_NOT_FOUND)
             else:
-                return Response(MovieDetailsSerializer(movie).data,
+                return Response(MovieDetailsSerializer(movie, context={'request': request}).data,
                                     status=status.HTTP_200_OK)
 
 
