@@ -63,20 +63,20 @@ class CommentView(APIView):
         if 'following' in request.query_params:
             movie_id = request.query_params['movie']
             movie = Movie.objects.get(pk=movie_id)
-            queryset = movie.comments.filter(user__profile__in=user.following.all()).order_by('created_at')
+            queryset = movie.comments.filter(user__profile__in=user.following.all()).order_by('-created_at')
         #query for comments of a movie
         elif 'movie' in request.query_params:
             movie_id = request.query_params['movie']
-            queryset = Comment.objects.filter(movie_id=movie_id).order_by('created_at')
+            queryset = Comment.objects.filter(movie_id=movie_id).order_by('-created_at')
 
         #query for comments of a user
         elif 'user' in request.query_params:
             user_id = request.query_params['user']
-            queryset = Comment.objects.filter(user_id=user_id).order_by('created_at')
+            queryset = Comment.objects.filter(user_id=user_id).order_by('-created_at')
 
         #query for comments of request.user
         else:
-            queryset = Comment.objects.filter(user=user).order_by('created_at')
+            queryset = Comment.objects.filter(user=user).order_by('-created_at')
 
         data = CommentSerializer(queryset, many=True).data
 
