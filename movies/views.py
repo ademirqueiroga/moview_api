@@ -65,13 +65,16 @@ class CommentView(APIView):
 
         #query for comments in specific movie made by users followed by me
         if 'following' and 'id' in request.query_params:
-            movie_id = request.query_params['id']
-            movie = Movie.objects.get(pk=movie_id)
-            queryset = movie.comments.filter(user__profile__in=user.following.all()).order_by('-created_at')
+            if request.query_params['following'] == True:
+                movie_id = request.query_params['id']
+                movie = Movie.objects.get(pk=movie_id)
+                queryset = movie.comments.filter(user__profile__in=user.following.all()).order_by('-created_at')
+            else :
+                movie_id = request.query_params['id']
+                queryset = Comment.objects.filter(movie_id=movie_id).order_by('-created_at')
+
         #query for comments of a specific movie
-        elif 'id' in request.query_params:
-            movie_id = request.query_params['id']
-            queryset = Comment.objects.filter(movie_id=movie_id).order_by('-created_at')
+
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
