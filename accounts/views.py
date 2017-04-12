@@ -9,6 +9,8 @@ from rest_framework.permissions import AllowAny
 
 from .serializers import UserSerializer, RelationshipSerializer
 from .models import Profile
+from movies.serializers import CommentSerializer
+from movies.models import Comment
 
 class UserView(APIView):
     permission_classes = (AllowAny,)
@@ -116,5 +118,22 @@ class RelationshipView(APIView):
         else:
             user.following.add(Profile.objects.get(user_id=user_id))
             data = {'follow': True}
+
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class CommentView(APIView):
+
+    def get(self, request):        
+
+        if 'id' in request.query_params:
+            user_id = request.query_params['id']
+            user = User.objects.get(pk=user_id)
+        else:
+            user = request.user
+
+        queryset = Comment.objects.filter(user=user).order_by('-created_at')
+
+        data = CommentSerializer(queryset, many=True).data
 
         return Response(data, status=status.HTTP_200_OK)

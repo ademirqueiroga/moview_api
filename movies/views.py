@@ -9,6 +9,10 @@ from rest_framework.views import APIView
 
 import json, requests, urllib
 
+class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
 class MovieViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
@@ -59,24 +63,17 @@ class CommentView(APIView):
     def get(self, request):
         user = request.user
 
-        #query for comments of users followed by me
-        if 'following' in request.query_params:
-            movie_id = request.query_params['movie']
+        #query for comments in specific movie made by users followed by me
+        if 'following' and 'id' in request.query_params:
+            movie_id = request.query_params['id']
             movie = Movie.objects.get(pk=movie_id)
             queryset = movie.comments.filter(user__profile__in=user.following.all()).order_by('-created_at')
-        #query for comments of a movie
-        elif 'movie' in request.query_params:
-            movie_id = request.query_params['movie']
+        #query for comments of a specific movie
+        elif 'id' in request.query_params:
+            movie_id = request.query_params['id']
             queryset = Comment.objects.filter(movie_id=movie_id).order_by('-created_at')
-
-        #query for comments of a user
-        elif 'user' in request.query_params:
-            user_id = request.query_params['user']
-            queryset = Comment.objects.filter(user_id=user_id).order_by('-created_at')
-
-        #query for comments of request.user
         else:
-            queryset = Comment.objects.filter(user=user).order_by('-created_at')
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
         data = CommentSerializer(queryset, many=True).data
 
@@ -86,7 +83,7 @@ class CommentView(APIView):
         user = request.user;
 
         try:
-            movie = Movie.objects.get(pk=request.data['movie'])
+            movie = Movie.objects.get(pk=request.data['id'])
         except Movie.DoesNotExist:
             return Response({'error': 'movie not found'},status=status.HTTP_400_BAD_REQUEST)
 
@@ -97,8 +94,3 @@ class CommentView(APIView):
         data = CommentSerializer(comment).data;
 
         return Response(data, status=status.HTTP_201_CREATED)
-
-
-class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer

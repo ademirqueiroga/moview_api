@@ -19,20 +19,18 @@ from accounts.views import *
 from movies.views import *
 from core.views import SearchView
 from rest_framework.routers import DefaultRouter
+from accounts import urls as accountsUrls
+from movies import urls as moviesUrls
 
-router = DefaultRouter()
-router.register(r'movies', MovieViewSet)
-router.register(r'categories', CategoryViewSet)
 
 urlpatterns = [
-    url(r'^movies/[0-9]+/$', MovieDetailsView.as_view()),
-    url(r'^', include(router.urls)),
+
     url(r'^admin/', admin.site.urls),
+
     url(r'^auth/', LoginView.as_view()),
-    url(r'^users/', UserView.as_view()),
     url(r'^signup/', SignupView.as_view()),
-    url(r'^search', SearchView.as_view()),
-    url(r'^relationships/', RelationshipView.as_view()),
-    url(r'^comments/', CommentView.as_view()),
-    #url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^users/', include(accountsUrls)),
+    url(r'^movies/', include(moviesUrls)),
+    url(r'^search/', SearchView.as_view()),
+
 ]
