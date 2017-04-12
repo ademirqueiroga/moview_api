@@ -5,8 +5,8 @@ from rest_framework.routers import DefaultRouter
 from movies.views import *
 
 router = DefaultRouter()
-router.register(r'^[0-9]+', MovieViewSet)
 router.register(r'^categories', CategoryViewSet)
+router.register(r'', MovieViewSet) # NEED TO BE THE LAST ROUTE
 
 urlpatterns = [
     url(r'^', include(router.urls)),
