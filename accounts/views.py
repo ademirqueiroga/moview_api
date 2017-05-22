@@ -124,7 +124,7 @@ class RelationshipView(APIView):
 
 class CommentView(APIView):
 
-    def get(self, request):        
+    def get(self, request):
 
         if 'id' in request.query_params:
             user_id = request.query_params['id']
@@ -135,5 +135,19 @@ class CommentView(APIView):
         queryset = Comment.objects.filter(user=user).order_by('-created_at')
 
         data = CommentSerializer(queryset, many=True).data
+
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class FeedView(APIView):
+
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        user = request.user
+
+        queryset = Comment.objects.filter(user__profile__in=user.following.all())
+
+        data = FeedSerializer(queryset, many=True).data
 
         return Response(data, status=status.HTTP_200_OK)
