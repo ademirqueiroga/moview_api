@@ -4,11 +4,14 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.db import models
 
+from movies.models import Movie
 
 class Profile(models.Model):
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
     picture = models.ImageField(null=True, blank=True, verbose_name='picture')
     followers = models.ManyToManyField(User, related_name='following')
+    favorites = models.ManyToManyField(Movie, related_name="favorited_by")
+    watchlist = models.ManyToManyField(Movie, related_name="listed_by")
 
     #TODO
     #add two integer fields for followers_count and following_count

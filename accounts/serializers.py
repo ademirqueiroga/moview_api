@@ -3,6 +3,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Profile
 from movies.models import Comment
+from movies.serializers import MovieSerializer
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -25,6 +26,24 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'name', 'followers_count', 'following_count')
 
 
+class ProfileSerializer(serializers.ModelSerializer):
+
+    favorites = serializers.SerializerMethodField()
+    watchlist = serializers.SerializerMethodField()
+
+    def get_favorites(self, obj):
+        queryset = obj.favorites.all()
+        return MovieSerializer(queryset, many=True).data
+
+    def get_watchlist(self, obj):
+        queryset = obj.watchlist.all()
+        return MovieSerializer(queryset, many=True).data
+
+    class Meta:
+        model = Profile
+        fields = ('picture', 'favorites', 'watchlist')
+
+
 class RelationshipSerializer(serializers.ModelSerializer):
     followers = serializers.SerializerMethodField()
     following = serializers.SerializerMethodField()
@@ -40,19 +59,3 @@ class RelationshipSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('followers', 'following')
-
-
-class FeedSerializer(serializers.ModelSerializer):
-
-    user = serializers.SerializerMethodField()
-    movie = serializers.SerializerMethodField()
-
-    def get_user(self, obj):
-        return obj.user
-
-    def get_movie(self, obj):
-        return obj.movie
-
-    class Meta:
-        model = Comment
-        fields = ('user', 'movie', 'content', 'likes', 'created_at')

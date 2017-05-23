@@ -17,7 +17,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from accounts.views import *
 from movies.views import *
-from core.views import SearchView
+from core.views import SearchView, FeedView
 from rest_framework.routers import DefaultRouter
 from accounts import urls as accountsUrls
 from movies import urls as moviesUrls
@@ -32,5 +32,6 @@ urlpatterns = [
     url(r'^users/', include(accountsUrls)),
     url(r'^movies/', include(moviesUrls)),
     url(r'^search/', SearchView.as_view()),
+    url(r'^feed/', FeedView.as_view()),
 
 ]

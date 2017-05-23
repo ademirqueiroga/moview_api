@@ -6,10 +6,11 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 
-from movies.models import Movie, Category
+from movies.models import Movie, Category, Comment
 from movies.serializers import MovieSerializer, CategorySerializer
 from accounts.serializers import UserSerializer
 from accounts.models import Profile
+from .serializers import FeedSerializer
 
 
 class SearchView(APIView):
@@ -58,3 +59,15 @@ class SearchView(APIView):
                 result['movies'] = result['movies'] + data
 
         return Response(result, status=status.HTTP_200_OK)
+
+
+class FeedView(APIView):
+
+    def get(self, request):
+        user = request.user
+
+        queryset = Comment.objects.filter(user__profile__in=user.following.all())
+
+        data = FeedSerializer(queryset, many=True).data
+
+        return Response(data, status=status.HTTP_200_OK)

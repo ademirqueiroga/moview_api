@@ -7,9 +7,9 @@ from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 
-from .serializers import UserSerializer, RelationshipSerializer
+from .serializers import UserSerializer, RelationshipSerializer, ProfileSerializer
 from .models import Profile
-from movies.serializers import CommentSerializer
+from movies.serializers import CommentSerializer, MovieSerializer
 from movies.models import Comment
 
 class UserView(APIView):
@@ -113,6 +113,7 @@ class RelationshipView(APIView):
 
         already_followed = user.following.filter(pk=user_id).count() > 0
         if already_followed:
+            #TODO change Profile query to id and test like did in FavoriteView
             user.following.remove(Profile.objects.get(user_id=user_id))
             data = {'follow': False}
         else:
@@ -139,15 +140,72 @@ class CommentView(APIView):
         return Response(data, status=status.HTTP_200_OK)
 
 
-class FeedView(APIView):
-
-    permission_classes = (AllowAny,)
+class  ProfileView(APIView):
 
     def get(self, request):
+        #TODO get for specific profile
         user = request.user
 
-        queryset = Comment.objects.filter(user__profile__in=user.following.all())
+        profile = user.profile
 
-        data = FeedSerializer(queryset, many=True).data
+        data = ProfileSerializer(profile).data
 
         return Response(data, status=status.HTTP_200_OK)
+
+
+class FavoriteView(APIView):
+
+    def get(self, request):
+        profile = request.user.profile
+
+        queryset = profile.favorites.all()
+
+        data = MovieSerializer(queryset, many=True).data
+
+        return Response(data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        profile = request.user.profile
+
+        if 'movie_id' in request.data:
+            movie_id = request.data['movie_id']
+            already_favorited = profile.favorites.filter(pk=movie_id).count() > 0
+
+            if already_favorited:
+                profile.favorites.remove(movie_id)
+            else:
+                profile.favorites.add(movie_id)
+
+            return Response(status=status.HTTP_200_OK)
+
+        else :
+            return Responses(status=status.HTTP_400_BAD_REQUEST)
+
+
+class WatchlistView(APIView):
+
+    def get(self, request):
+        profile = request.user.profile
+
+        queryset = profile.watchlist.all()
+
+        data = MovieSerializer(queryset, many=True).data
+
+        return Response(data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        profile = request.user.profile
+
+        if 'movie_id' in request.data:
+            movie_id = request.data['movie_id']
+            already_added = profile.watchlist.filter(pk=movie_id).count() > 0
+
+            if already_added:
+                profile.watchlist.remove(movie_id)
+            else:
+                profile.watchlist.add(movie_id)
+
+            return Response(status=status.HTTP_200_OK)
+
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)

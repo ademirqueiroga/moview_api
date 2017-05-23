@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from accounts.models import Profile
 from django.contrib.auth.models import User
 
 class Category(models.Model):
