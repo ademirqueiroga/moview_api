@@ -30,6 +30,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     favorites = serializers.SerializerMethodField()
     watchlist = serializers.SerializerMethodField()
+    followers_count = serializers.SerializerMethodField()
+    following_count = serializers.SerializerMethodField()
 
     def get_favorites(self, obj):
         queryset = obj.favorites.all()
@@ -39,9 +41,15 @@ class ProfileSerializer(serializers.ModelSerializer):
         queryset = obj.watchlist.all()
         return MovieSerializer(queryset, many=True).data
 
+    def get_followers_count(self, obj):
+        return obj.followers.count()
+
+    def get_following_count(self, obj):
+        return obj.user.following.count()
+
     class Meta:
         model = Profile
-        fields = ('picture', 'favorites', 'watchlist')
+        fields = ('picture', 'favorites', 'watchlist', 'followers_count', 'following_count')
 
 
 class RelationshipSerializer(serializers.ModelSerializer):
