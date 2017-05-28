@@ -67,7 +67,7 @@ class CommentView(APIView):
         if all(q in request.query_params for q in ('id', 'following')):
             movie_id = request.query_params['id']
             movie = Movie.objects.get(pk=movie_id)
-            queryset = movie.comments.filter(user__profile__in=user.following.all()).order_by('-created_at')
+            queryset = movie.comments.filter(user__profile__in=user.following.all(), user=user).order_by('-created_at')
         #query for comments of a specific movie
         elif 'id' in request.query_params:
             movie_id = request.query_params['id']
