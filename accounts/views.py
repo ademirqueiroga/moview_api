@@ -162,7 +162,7 @@ class FavoriteView(APIView):
 
         data = MovieSerializer(queryset, many=True).data
 
-        return Response(data, status=status.HTTP_200_OK)
+        return Response({"results": data}, status=status.HTTP_200_OK)
 
     def post(self, request):
         profile = request.user.profile
@@ -191,7 +191,7 @@ class WatchlistView(APIView):
 
         data = MovieSerializer(queryset, many=True).data
 
-        return Response(data, status=status.HTTP_200_OK)
+        return Response({"results": data}, status=status.HTTP_200_OK)
 
     def post(self, request):
         profile = request.user.profile
