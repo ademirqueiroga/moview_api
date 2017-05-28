@@ -5,6 +5,8 @@ from rest_framework import viewsets, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from django.db.models import Q
 # Create your views here.
 
 import json, requests, urllib
@@ -67,7 +69,7 @@ class CommentView(APIView):
         if all(q in request.query_params for q in ('id', 'following')):
             movie_id = request.query_params['id']
             movie = Movie.objects.get(pk=movie_id)
-            queryset = movie.comments.filter(user__profile__in=user.following.all(), user=user).order_by('-created_at')
+            queryset = movie.comments.filter( Q(user__profile__in=user.following.all()) | Q(user=user) ).order_by('-created_at')
         #query for comments of a specific movie
         elif 'id' in request.query_params:
             movie_id = request.query_params['id']
