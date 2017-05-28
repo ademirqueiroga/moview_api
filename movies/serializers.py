@@ -27,7 +27,7 @@ class MovieDetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Movie
-        fields = '__all__'
+        fields = ('id', 'title', 'overview', 'release_date', 'poster_path', 'following_comments', 'categories')
 
 class CategorySerializer(serializers.ModelSerializer):
 
