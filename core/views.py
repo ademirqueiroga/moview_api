@@ -67,9 +67,9 @@ class FeedView(APIView):
         user = request.user
 
         if request.query_params['all'] == 'true':
-            queryset = Comment.objects.filter(user__profile__in=user.following.all())
+            queryset = Comment.objects.filter(user__profile__in=user.following.all()).order_by('-created_at')
         else:
-            queryset = Comment.objects.filter(user=user)
+            queryset = Comment.objects.filter(user=user).order_by('-created_at')
 
         data = FeedSerializer(queryset, many=True).data
 
