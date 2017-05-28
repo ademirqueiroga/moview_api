@@ -66,7 +66,10 @@ class FeedView(APIView):
     def get(self, request):
         user = request.user
 
-        queryset = Comment.objects.filter(user__profile__in=user.following.all())
+        if request.query_params['all'] == 'true':
+            queryset = Comment.objects.filter(user__profile__in=user.following.all())
+        else:
+            queryset = Comment.objects.filter(user=user)
 
         data = FeedSerializer(queryset, many=True).data
 
